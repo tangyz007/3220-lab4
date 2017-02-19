@@ -69,7 +69,7 @@ q=argc%2;
 			
 		case 's':
 		scale = atof(argv[i+1]);
-		printf("%f",scale);
+		//printf("%f",scale);
 		do_scale(myname, scale);
 		break;
 		case 'r':	
