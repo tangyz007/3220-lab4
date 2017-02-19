@@ -73,7 +73,7 @@ q=argc%2;
 		do_scale(myname, scale);
 		break;
 		case 'r':	
-		//int* ayeray = Read_file(myname);
+		
 		output_file = argv[i+1];
 		write_to_file(myname,output_file);
 		}
