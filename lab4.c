@@ -2,17 +2,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void open_store(char* filename);
+void open_store(char* filename,double offset1);
 void file_number(int value);
-void write_to_file(char* filename, double* array, int length);
-void off_set(int * array,int l,double offset);
+void write_to_file(char* filename1,char* filename2);
+void do_scale(char* filename,double scale1);
+//void Read_file(char* filename);
 int main(int argc, char* argv[]){
 
 
 int value;
 int i = 1, count,q;
-float offset;
+float offset, scale;
 char *myname[100];
+char *output_file;
 
 q=argc%2;
 	if (q==0)
@@ -42,9 +44,9 @@ q=argc%2;
 	count=argv[i][1];
 	switch(count)
 	{
-	case 'n':
+		case 'n':
 	
-            value = atoi(argv[i+1]);
+            value = atof(argv[i+1]);
 			
 			if (value<=0||value>11)
 			{
@@ -59,11 +61,21 @@ q=argc%2;
 				break;
 			}
 		case 'o':
+		offset = atof(argv[i+1]);
+		//printf("%f",offset);
 		
-		open_store(myname);
-		offset = atoi(argv[i+1]);
-		 off_set(newarray, l, offset);
+		 open_store(myname, offset);
+			break;
 			
+		case 's':
+		scale = atof(argv[i+1]);
+		printf("%f",scale);
+		do_scale(myname, scale);
+		break;
+		case 'r':	
+		//int* ayeray = Read_file(myname);
+		output_file = argv[i+1];
+		write_to_file(myname,output_file);
 		}
 		i++;
 	}
@@ -74,29 +86,13 @@ q=argc%2;
 	
 	
 
-int read_fromfile(char *filename)
-{
-	
-}
-//void file_number(int value){
-	 
-	// char *myname[100];
-	 
-	
-	
-	
-	//sprintf(myname,"Raw_data_%02d.txt",value);
-//}
-	//int o=0;
-	//while (o<10)
-	//{
-	//printf("%d",myname[o]);
-	//o++;
-	//}
-	void open_store(char* filename)
+
+	void open_store(char* filename,double offset1)
 	{
 		 int l,m;
 	 FILE*fp;
+	
+	 
 	fp= fopen(filename,"r");
 	
 	fscanf(fp,"%d",&l);
@@ -108,56 +104,122 @@ int read_fromfile(char *filename)
 	//printf("%d",m);
 	//printf("\n");
 	int * newarray= (int*)malloc(l*sizeof(int));
+	double * data_offset= malloc(l*sizeof(double));
 	
 	int i=0;
 	while(i<l)
 	{ 
 		fscanf(fp,"%d",(newarray+i));
+		*(data_offset+i)=*(newarray+i)+offset1;
+		printf("\n %.4f",*(data_offset+i));
 		//printf("%d",*(newarray+i));
 		i++;
 		
 	}
 	
 	
+
+		//*(data_offset+j)=*(newarray+j)+offset1;
+		//printf("%f",*(data_offset+j));
+		//j++;
+		
+	
+	
 	fclose(fp);
 	}
 	
-	void off_set(int * array, int length,double offset)
+	void do_scale(char* filename,double scale1)
 	{
-		
-		double *data_offset;
-		
-		int i=0;
-		while(i<length)
+		 int l,m;
+	 FILE*fp;
+	
+	 
+	fp= fopen(filename,"r");
+	
+	fscanf(fp,"%d",&l);
+	//printf("%d",l);
+	int length;
+	length =l;
+	//printf("\n");
+	fscanf(fp,"%d",&m);
+	//printf("%d",m);
+	//printf("\n");
+	int * newarray= (int*)malloc(l*sizeof(int));
+	double * data_scale= malloc(l*sizeof(double));
+	
+	int i=0;
+	while(i<l)
 	{ 
-
-		*(data_offset+i)=*(array+i)+offset;
-		printf("%f",*(data_offset+i));
+		fscanf(fp,"%d",(newarray+i));
+		*(data_scale+i)=*(newarray+i)*scale1;
+		printf("\n %.4f",*(data_scale+i));
+		//printf("%d",*(newarray+i));
 		i++;
 		
 	}
+	
+		
+	
+	
+	fclose(fp);
 	}
 	
-	void write_to_file(char* filename, double* array){
-  	
-	 if(filename == NULL){
-                printf("WRITE FILE ERROR! FILENAME WAS NULL OR LENGTH WAS INVALID\n");
-                exit(0);
-         }
+//void Read_file(char* filename)
+//{
+	//int l,m;
+	 //FILE*fp;
+	
+	 
+//	fp= fopen(filename,"r");
+	
+	//fscanf(fp,"%d",&l);
+	//int length;
+	//length=l;
+	//int * newarray= (int*)malloc(l*sizeof(int));
+	//while(i<l)
+	//{ 
+	//	fscanf(fp,"%d",(newarray+i));
+	//	i++;
+		
+//	}
+//	fclose(fp);
+//}
+	
+	
+	void write_to_file(char* filename1,char* filename2){
+		 FILE*fp1;
+	     FILE*fp2;
+		 int l,m;
+		 int i=0;
+	 
+	fp1= fopen(filename1,"r");
+	fscanf(fp1,"%d",&l);
+	fscanf(fp1,"%d",&m);
+	int length;
+	length=l;
+	int * newarray= (int*)malloc(l*sizeof(int));
+	while(i<l)
+	{ 
+		fscanf(fp1,"%d",(newarray+i));
+		i++;
+		
+	}
+	
+	 
 
-        FILE* fp = fopen(filename,"w");
-        if(fp == NULL){
-                printf("There was an error attempting to open file %s\n",filename);
-                exit(0);
-        } 
+        fp2 = fopen(filename2,"w");
 
-        int i = 0;
-        while(i < length){
-                fprintf(fp,"%lf", *(array+i));
-                i++;
+ 
+
+        int j = 0;
+        while(j < length){
+			
+                fprintf(fp2,"%d \n" , *(newarray+j));
+                j++;
         }
 
-	
+	fclose(fp1);
+	fclose(fp2);
 }
 
 
