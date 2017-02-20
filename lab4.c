@@ -7,23 +7,24 @@ void file_number(int value);
 void write_to_file(char* filename2,int* array, int length);
 void do_scale(char* filename,double scale1);
 int return_length(char* filename);
+int return_max(char* filename);
 int* Read_file(char* filename);
 int find_max(int* array, int length);
 double average(int* array, int length);
 double* center(int* array,double mean1, int length);
-
+double* normalize(int* array,double max1, int length);
 
 
 int main(int argc, char* argv[]){
 
 
-int value,size;
+int value,size,maximum;
 int i = 1, count,q;
 float offset, scale;
 char *myname[100];
 char *output_file;
 int* ayeray;
-int* ayeray2;
+double* ayeray2;
 double mean;
 
 q=argc%2;
@@ -113,24 +114,55 @@ q=argc%2;
 		//printf("%f",mean);
 		ayeray2=center(ayeray,mean,size);
 		int i=0;
+		
 	while(i<size)
 	{ 
 		
 		
-		printf("%d",*(ayeray2+i));
+		printf("%f \n",*(ayeray2+i));
 		
 		i++;
 		
 	}
+		break;
+		
+		case 'N':
+		size=return_length(myname);
+		ayeray = Read_file(myname);
+		maximum=return_max(myname);
+		ayeray2=normalize(ayeray,maximum, size);
 		
 		
+	while(i<size)
+	{ 
+		
+		
+		printf("%f \n",*(ayeray2+i));
+		
+		i++;
+		
+	}
+	break;
 		}
 		i++;
 	}
 	
 	//}
 }
-
+	int return_max(char* filename)
+	{
+		int l,max;
+		FILE*fp;
+	
+	 
+	fp= fopen(filename,"r");
+	fscanf(fp,"%d",&l);
+	fscanf(fp,"%d",&max);
+	
+	fclose(fp);
+	return max;
+		
+	}
 	
 	int return_length(char* filename)
 	{
@@ -302,11 +334,27 @@ double* center(int* array,double mean1, int length)
 	int i = 0;
 	while(i < length){
 		*(data+i)= *(array+i)-mean1;
-			
+		//printf("\n %.4f",*(data+i));	
 			
 		i++;
 	}
 	
 
 	return data;
+}
+
+double* normalize(int* array,double max1, int length)
+{
+	double * data = malloc(length*sizeof(double));
+	int i = 0;
+	while(i < length){
+		*(data+i)= *(array+i)/max1;
+		//printf("\n %.4f",*(data+i));	
+			
+		i++;
+	}
+	
+
+	return data;
+	
 }
