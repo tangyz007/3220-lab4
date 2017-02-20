@@ -6,11 +6,12 @@ void open_store(char* filename,double offset1);
 void file_number(int value);
 void write_to_file(char* filename1,char* filename2);
 void do_scale(char* filename,double scale1);
+void return_length(char* filename);
 //void Read_file(char* filename);
 int main(int argc, char* argv[]){
 
 
-int value;
+int value,size;
 int i = 1, count,q;
 float offset, scale;
 char *myname[100];
@@ -57,9 +58,10 @@ q=argc%2;
 				sprintf(myname,"Raw_data_%02d.txt",value);
 
 				
-				i++;
-				break;
+			
+				
 			}
+			break;
 		case 'o':
 		offset = atof(argv[i+1]);
 		//printf("%f",offset);
@@ -76,6 +78,10 @@ q=argc%2;
 		
 		output_file = argv[i+1];
 		write_to_file(myname,output_file);
+		break;
+		case 'S':
+		
+		
 		}
 		i++;
 	}
@@ -84,7 +90,17 @@ q=argc%2;
 }
 
 	
+	void return_length(char* filename)
+	{
+		int l,length,
+		FILE*fp;
 	
+	 
+	fp= fopen(filename,"r");
+	fscanf(fp,"%d",&l);
+	length=l;
+	return length;
+	}
 
 
 	void open_store(char* filename,double offset1)
@@ -164,26 +180,26 @@ q=argc%2;
 	fclose(fp);
 	}
 	
-//void Read_file(char* filename)
-//{
-	//int l,m;
-	 //FILE*fp;
+void Read_file(char* filename)
+{
+	int l,m;
+	 FILE*fp;
 	
 	 
-//	fp= fopen(filename,"r");
+    fp= fopen(filename,"r");
 	
-	//fscanf(fp,"%d",&l);
-	//int length;
-	//length=l;
-	//int * newarray= (int*)malloc(l*sizeof(int));
-	//while(i<l)
-	//{ 
-	//	fscanf(fp,"%d",(newarray+i));
-	//	i++;
+	fscanf(fp,"%d",&l);
+	fscanf(fp,"%d",&m);
+	
+	int * newarray= (int*)malloc(l*sizeof(int));
+	while(i<l)
+	{ 
+	fscanf(fp,"%d",(newarray+i));
+		i++;
 		
-//	}
-//	fclose(fp);
-//}
+	}
+	fclose(fp);
+}
 	
 	
 	void write_to_file(char* filename1,char* filename2){
