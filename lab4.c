@@ -6,8 +6,11 @@ void open_store(char* filename,double offset1);
 void file_number(int value);
 void write_to_file(char* filename1,char* filename2);
 void do_scale(char* filename,double scale1);
-void return_length(char* filename);
-//void Read_file(char* filename);
+int return_length(char* filename);
+int* Read_file(char* filename);
+int find_max(int* array, int length);
+
+
 int main(int argc, char* argv[]){
 
 
@@ -16,21 +19,22 @@ int i = 1, count,q;
 float offset, scale;
 char *myname[100];
 char *output_file;
+int* ayeray;
 
 q=argc%2;
-	if (q==0)
-	{
-		if ((argv[1][0] == '-') && (argv[1][1] == 'h'))
-		{printf(" options:\n -n: File number (value needed)\n -o: offset value (value needed)\n -s: scale factor (value needed)\n -r: Rename files (name needed)\n -h: Help (display how the program should be called, including the different input options)\n");
-		}
-	else 
-	{
-		printf(" Please input ./a.out -h for help!");
+	//if (q==0)
+	//{
+		//if ((argv[1][0] == '-') && (argv[1][1] == 'h'))
+		//{printf(" options:\n -n: File number (value needed)\n -o: offset value (value needed)\n -s: scale factor (value needed)\n -r: Rename files (name needed)\n -h: Help (display how the program should be called, including the different input options)\n");
+		//}
+	//else 
+	//{
+	//	printf(" Please input ./a.out -h for help!");
 		
-	}
-	}
-	else
-	{
+	//}
+	//}
+	//else
+	//{
 	while(i < argc){
 	if((argv[i][0] == '-'))
 		goto l1;
@@ -79,26 +83,50 @@ q=argc%2;
 		output_file = argv[i+1];
 		write_to_file(myname,output_file);
 		break;
+		
 		case 'S':
+		//Read_file(myname);
+		size=return_length(myname);
+		//printf("%d",size);
+		ayeray = Read_file(myname);
+		if(ayeray == NULL){
+		printf("Read file returned a NULL address\nexiting...\n");
+		return -1;
+	}
+		//int i=0;
+	//while(i<size)
+	//{ 
+		
+		
+		//printf("%d",*(ayeray+i));
+		
+	//	i++;
+		
+//	}
+		
+		printf("The max is: %d\n",find_max(ayeray,size));
+		
+		break;
 		
 		
 		}
 		i++;
 	}
 	
-	}
+	//}
 }
 
 	
-	void return_length(char* filename)
+	int return_length(char* filename)
 	{
-		int l,length,
+		int l,length;
 		FILE*fp;
 	
 	 
 	fp= fopen(filename,"r");
 	fscanf(fp,"%d",&l);
 	length=l;
+	fclose(fp);
 	return length;
 	}
 
@@ -180,7 +208,7 @@ q=argc%2;
 	fclose(fp);
 	}
 	
-void Read_file(char* filename)
+int* Read_file(char* filename)
 {
 	int l,m;
 	 FILE*fp;
@@ -191,14 +219,17 @@ void Read_file(char* filename)
 	fscanf(fp,"%d",&l);
 	fscanf(fp,"%d",&m);
 	
-	int * newarray= (int*)malloc(l*sizeof(int));
+	int * newarray=(int*) malloc(l*sizeof(int));
+	int i=0;
 	while(i<l)
 	{ 
 	fscanf(fp,"%d",(newarray+i));
-		i++;
 		
+		printf("%d",*(newarray+i));
+		i++;
 	}
 	fclose(fp);
+	return newarray;
 }
 	
 	
@@ -238,5 +269,21 @@ void Read_file(char* filename)
 	fclose(fp2);
 }
 
+int find_max(int* array, int length){
+	
+	
 
+	int i = 0;
+	int max = *(array+i);
+	i++;
+
+	while(i < length){
+		if( *(array+i) > max ){
+			max = *(array+i);
+		}	
+		i++;
+	}
+
+	return max;
+}
 
